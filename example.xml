@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><occpchallenge>
+
+	<rootdns>
+		<entry name= rrtype= value= />
+	</rootdns>
+
+	<network label= />
+
+	<host basevm="" domain="" hostname="" label="" phase="" ram="">
+		<interface broadcast="" config="" gateway="" ipv4="" name="" network=""/>
+		<content>
+			<pack config="updater" name="occputils">
+				<arg> val </arg>
+			</pack>
+		</content>
+	</host>
+
+	<scenario description="" gameid="" name="" type="">
+		<length format="" time=""/>
+		<networkid number=""/>
+		<users>
+			<user name="" pass=""/>
+		</users>
+		<user-interfaces>
+			<user-interface name="" show-other-controls="" show-scoreboard="" show-teams-all="">
+				<scoreboard name=""/>
+				<permitted-users>
+					<user name=""/>
+				</permitted-users>
+			</user-interface>
+		</user-interfaces>
+	
+		<score-labels>
+			<score-label name="" sql=""/>
+		</score-labels>
+		
+		<score-names>
+			<score-name descr="" formula="" name=""/>
+		</score-names>
+
+		<scoreboards>
+			<scoreboard name="moderator-board" update-rate="live">
+				<score-name name=""/>
+			</scoreboard>
+		</scoreboards>
+	</scenario>
+	
+	<ip-pools>
+		<pool cidr="" name="" network="">
+			<address addr="" count="" select="" type=""/>
+		</pool>
+	</ip-pools>
+	
+	<event-handlers>
+		<handler class-handler="" name="" server-hostname="" server-ip="" server-port=""/>
+	</event-handlers>
+
+	<team name="">
+		<team-host hostname=""/>
+		<speed factor=""/>
+
+		<team-event-list>
+			<team-event command="" drift="" endtime="" frequency="" guid="" handler="" id="" ipaddress="" name="" starttime="">
+				<score-atomic points="" score-group="" when=""/>
+			</team-event>
+		</team-event-list>
+	</team>
+		
+</occpchallenge>
