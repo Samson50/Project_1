@@ -6,24 +6,24 @@ class Pack:
         self.name = name
         self.args = {}
 
-    def __repr__(self):
-        ret = '<pack config="%s" name="%s">' % (self.config, self.name)
+    def __str__(self):
+        ret = '\t\t\t<pack config="%s" name="%s">\n' % (self.config, self.name)
         for arg in args:
-            ret += "<"+arg+">"+args(arg)+"</"+arg+">"
-        ret += "</pack>"
+            ret += "\t\t\t\t<"+arg+">"+args[arg]+"</"+arg+">\n"
+        ret += "\t\t\t</pack>\n"
 
     def add_arg(self, arg, val):
-        self.args(arg) = val
+        self.args[arg] = val
 
 class Content:
     def __init__(self):
         self.packs = []
 
-    def __repr__(self):
-        ret = '<content>'
+    def __str__(self):
+        ret = '/t/t<content>\n'
         for pack in packs:
             ret += pack
-        ret += '</content>'
+        ret += '/t/t</content>\n'
         
     def add_pack(self, config, name):
         self.packs += Pack(config, name)
@@ -37,8 +37,8 @@ class Interface:
         self.name = name
         self.network = network
 
-    def __repr__(self):
-        ret = '<interface broadcast="%s" config="%s" gateway="%s" ipv4="%s" name="%s" network="%s"/>' % (self.broadcast, self.config, self.gateway, self.ipv4, self.name, self.network)
+    def __str__(self):
+        ret = '\t\t<interface broadcast="%s" config="%s" gateway="%s" ipv4="%s" name="%s" network="%s"/>\n' % (self.broadcast, self.config, self.gateway, self.ipv4, self.name, self.network)
         return ret
     
 class Host:
@@ -52,12 +52,12 @@ class Host:
         self.content = Content()
         self.interfaces = []
 
-    def __repr__(self):
-        ret = '<host basevm="%s" domain="%s" hostname="%s" label="%s" phase="%s" ram="%s">' % (self.basevm, self.domain, self.hostname, self.label, self.phase, self.ram)
+    def __str__(self):
+        ret = '\t<host basevm="%s" domain="%s" hostname="%s" label="%s" phase="%s" ram="%s">\n' % (self.basevm, self.domain, self.hostname, self.label, self.phase, self.ram)
         ret += self.content
         for interface in self.interfaces:
             ret += interface
-        ret += "</host>"
+        ret += "\t</host>\n"
         return ret
     
     def add_interface(self, broadcast, config, gateway, ipv4, name, network):
@@ -69,6 +69,30 @@ class User_Interface:
         self.soc = soc
         self.showboard = showboard
         self.sta = sta
+        self.board = ""
+        self.permitted_users = []
+
+    def __str__(self):
+        ret = '\t\t\t<user-interface name="%s" show-other-controls="%s" show-scoreboard="%s" show-teams-all="%s">\n' % (self.name, self.soc, self.showboard, self.sta)
+        if self.board != "":
+            ret += '\t\t\t\t<scoreboard name="%s"/>\n' % (self.board)
+        ret += '\t\t\t\t<permitted-users>\n'
+        for usr in self.permitted_users:
+            ret += '\t\t\t\t\t<user name="%s"/>\n' % (usr)
+        ret += '\t\t\t\t</permitted-users>\n'
+        ret += '\t\t\t</user-interface>\n'
+
+    def add_user(self, name):
+        self.permitted_users += [name]
+
+    def remove_user(self, name):
+        try:
+            self.permitted_users.remove(name)
+        except:
+            print "No such user: "+name
+
+    def set_scoreboard(self, name):
+        self.board = name
 
 class Scoreboard:
     def __init__(self, name, update_rate):
@@ -76,13 +100,13 @@ class Scoreboard:
         self.update_rate = update_rate
         self.score_name = []
 
-    def __repr__(self)
-        ret = '<scoreboard name="%s" update-rate="%s">' % (self.name, self.update_rate)
+    def __str__(self):
+        ret = '\t\t\t<scoreboard name="%s" update-rate="%s">\n' % (self.name, self.update_rate)
         ret += self.score_name
-        ret += '</scoreboard>'
+        ret += '\t\t\t</scoreboard>\n'
 
     def set_name(self, name):
-        self.score_name += '<score-name name="%s"/>' % (name)]
+        self.score_name += ['\t\t\t\t<score-name name="%s"/>\n' % (name)]
 
 class Scenario:
     def __init__(self, description, gameid, name, tipe):
@@ -98,105 +122,215 @@ class Scenario:
         self.score_names = []
         self.scoreboards = []
 
-    def __repr__(self):
-        ret = '<scenario description="%s" gameid="%s" name="%s" type="%s">' % (self.description, self.gameid, self.name, self.tipe)
+    def __str__(self):
+        ret = '\t<scenario description="%s" gameid="%s" name="%s" type="%s">\n' % (self.description, self.gameid, self.name, self.tipe)
         ret += self.length
         ret += self.networkid
-        ret += '<users>'
+        ret += '\t\t<users>\n'
         for user in self.users:
             ret += user
-        ret += '</users>'
-        ret += '<user-interfaces>'
+        ret += '\t\t</users>\n'
+        ret += '\t\t<user-interfaces>\n'
         for ui in self.user_interfaces:
             ret += ui
-        ret += '</user-interfaces>'
-        ret += '<score-labels>'
+        ret += '\t\t</user-interfaces>\n'
+        ret += '\t\t<score-labels>\n'
         for label in self.score_labels:
             ret += label
-        ret += '</score-labels>'
-        ret += '<score-names>'
+        ret += '\t\t</score-labels>\n'
+        ret += '\t\t<score-names>\n'
         for nam in self.score_names:
             ret += nam
-        ret += '</score-names>'
-        ret += '<scoreboards>'
+        ret += '\t\t</score-names>\n'
+        ret += '\t\t<scoreboards>\n'
         for scoreboard in self.scoreboards:
             ret += scoreboard
-        ret += '</scoreboards>'
-        ret += '</scenario>'
+        ret += '\t\t</scoreboards>\n'
+        ret += '\t</scenario>\n'
+        return ret
 
     def set_length(self, format, time):
-        self.length = '<length format="%s" time="%s"/>' % (format, time)
+        self.length = '\t\t<length format="%s" time="%s"/>\n' % (format, time)
 
     def set_networkid(self, number):
-        self.networkid = '<networkid number="%s"/>' % (number)
+        self.networkid = '\t\t<networkid number="%s"/>\n' % (number)
 
     def add_user(self, name, passwd):
-        self.users += ['<user name="%s" pass="%s"/>' % (name, passwd)]
+        self.users += ['\t\t\t<user name="%s" pass="%s"/>\n' % (name, passwd)]
 
     def add_interface(self, name, soc, showboard, sta):
         self.user_interfaces += User_Interface(name, soc, showboard, sta)
 
     def add_score_label(self, name, sql):
-        self.score_labels += ['<score-label name="%s" sql="%s"/>' % (name, sql)]
+        self.score_labels += ['\t\t\t<score-label name="%s" sql="%s"/>\n' % (name, sql)]
 
     def add_score_name(self, descr, formula, name):
-        self.score_names += ['<score-name descr="%s" formula="%s" name="%s"/>' % (descr, formula, name)]
+        self.score_names += ['\t\t\t<score-name descr="%s" formula="%s" name="%s"/>\n' % (descr, formula, name)]
 
     def add_scoreboard(self, name, update_rate):
         self.scoreboards += Scoreboard(name, update_rate)
-        
 
-class ScenarioGen():
+class Address:
+    def __init__(self, addr, count, select, tipe):
+        self.addr = addr
+        self.count = count
+        self.select = select
+        self.tipe = tipe
+
+    def __str__(self):
+        return '\t\t\t<address addr="%s" count="%s" select="%s" type="%s"/>\n' % (self.addr, self.count, self.select, self.tipe)
+
+class IP_Pool:
+    def __init__(self, cidr, name, network):
+        self.cidr = cidr
+        self.name = name
+        self.network = network
+        self.addresses = []
+
+    def __str__(self):
+        ret = '\t\t<pool cidr="%s" name="%s" network="%s">\n' % (self.cidr, self.name, self.network)
+        for addr in self.addresses:
+            ret += addr
+        ret += '\t\t</pool>\n'
+        return ret
+
+    def add_address(self, addr, count, select, tipe):
+        self.address += Address(addr, count, select, tipe)
+
+class IP_Pools:
     def __init__(self):
-        self.tree = ET.Element("root")
+        self.pools = []
 
-    def add_user(self, element, usr, passwd):
-        users = element.find("users")
-        if not users:
-            users = ET.SubElement(element, "users")
-        ET.SubElement(users, "user", {"name":usr, "pass":passwd})
+    def __str__(self):
+        ret = '\t<ip-pools>\n'
+        for pool in self.pools:
+            ret += pool
+        ret += '\t</ip-pools>\n'
+        return ret
 
-    def add_interface(self, host, name, config=False, ipv4=False, auto=False, broadcast=False, gateway=False, network=False):
-        tags = {"name" : name}
-        if config != False:     tag["config"] = config
-        if ipv4 != False:       tag["ipv4"] = ipv4
-        if auto != False:       tag["auto"] = auto
-        if broadcast != False:  tag["broadcast"] = broadcast
-        if gateway != False:    tag["gateway"] = gateway
-        if network != False:    tag["network"] = network
-        ET.SubElement(host, "interface", tags)
+class Handler:
+    def __init__(self, ch, name, sh, si, sp):
+        self.ch = ch
+        self.name = name
+        self.sh = sh
+        self.si = si
+        self.sp = sp
 
-    def add_content(self, host, pack, args={}):
-        content = host.find("content")
-        if not content:
-            content = ET.SubElement(host, "content")
-        con_pack = ET.SubElement(content, "pack", {"name":pack})
-        for tag in args:
-            arg = ET.SubElement(con_pack, tag)
-            arg.text = args[tag]
+    def __str__(self):
+        return '\t\t<handler class-handler="%s" name="%s" server-hostname="%s" server-ip="%s" server-port="%s"/>\n' % (self.ch, self.name, self.sh, self.si, self.sp)
+
+class Event_Handlers:
+    def __init__(self):
+        self.handlers = []
+
+    def __str__(self):
+        ret = '\t<event-handlers>\n'
+        for han in self.handlers:
+            ret += han
+        ret += '\t</event-handlers>\n'
+        return ret
+
+    def add_handler(self, class_handler, name, server_hostname, server_ip, server_port):
+        self.handlers += Handler(class_handler, name, server_hostname, server_ip, server_port)
+
+class Team_Event:
+    def __init__(self, command, drift, endtime, freq, guid, handler, id, ipaddr, name, st):
+        self.command = command
+        self.drift = drift
+        self.endtime = endtime
+        self.freq = freq
+        self.guid = guid
+        self.handler = handler
+        self.id = id
+        self.ipaddr = ipaddr
+        self.name = name
+        self.st = st
+        self.factors = []
+
+    def __str__(self):
+        ret = '\t\t\t<team-event command="%s" drift="%s" endtime="%s" frequency="%s" guid="%s" handler="%s" id="%s" ipaddress="%s" name="%s" start-time="%s">\n' % (self.command, self.drift, self.endtime, self.freq, self.guid, self.handler, self.id, self.ipaddr, self.name, self.st)
+        for fact in self.factors:
+            ret += fact
+        ret += '\t\t\t</team-event>\n'
+        return ret
+        
+    def add_score_factor(self, points, score_group, when):
+        self.factors += ['\t\t\t\t<score-atomic points="%s" score-group="%s" when="%s"/>\n' % (points, score_group, when)]
+
+    def remove_factor(self, index):
+        self.factors.drop(index)
+
+class Team:
+    def __init__(self, name):
+        self.name = name
+        self.host = ""
+        self.speed = ""
+        self.events = []
+
+    def __str__(self):
+        ret = '\t<team name="%s">\n' % self.name
+        ret += '\t\t<team-host hostname="%s"/>\n' % self.host
+        ret += '\t\t<speed factor="%s"/>\n' % self.speed
+        ret += '\t\t<team-event-list>\n'
+        for event in self.events:
+            ret += event
+        ret += '\t\t</team-event-list>\n'
+        ret += '\t</team>\n'
+        return ret
+
+    def set_host(self, host):
+        self.host = host
+        
+    def set_speed(self, speed):
+        self.speed = str(speed)
+        
+    def add_event(self, command, drift, endtime, frequency, guid, handler, id, ipaddress, name, start_time):
+        self.events += Team_Event(command, drift, endtime, frequency, guid, handler, ip, ipaddress, name, start_time)
+
+class Instance_Builder:
+    def __init__(self):
+        self.dns = []
+        self.networks = []
+        self.hosts = []
+        self.ip_pools = IP_Pools()
+        self.event_handlers = Event_Handlers()
+        self.teams = []
+
+    def __str__(self):
+        ret = '<occpchallenge>\n'
+        ret += '\t<rootdns>\n'
+        for d in self.dns:
+            ret += d
+        ret += '\t</rootdns>\n'
+        for net in self.networks:
+            ret += net
+        for host in self.hosts:
+            ret += host
+        ret += str(self.ip_pools)
+        ret += str(self.event_handlers)
+        for team in self.teams:
+            ret += str(team)
+        ret += '</occpchallenge>'
+        return ret
+
+    def add_dns_entry(self, name, rrtype, value):
+        self.dns += ['\t\t<entry name="%s" rrtype="%s" value="%s"/>\n' % (name, rrtype, value)]
+
+    def add_network(self, label):
+        self.networks += ['\t<network label="%s"/>\n' % label]
+
+    def add_host(self, basevm, domain, hostname, label, phase, ram):
+        self.hosts += Host(basevm, domain, hostname, label, phase, ram)
 
     def add_team(self, name):
-        team = ET.SubElement(self.tree, "team", {"name":name})
-        evnt_list = ET.SubElement(team, "team-event-list")
+        self.teams += Team(name)
 
-    def add_team_event(self, team_name, name, handler, ipaddress, starttime, endtime, frequency, drift):
-        teams = self.tree.findall("team")
-        for team in teams:
-            if team.get("name") == team_name:
-                return ET.SubElement(team, "team-event", {"name":name, "handler":handler, "ipaddress":ipaddress, "starttime":starttime, "endtime":endtime, "frequency":frequency, "drift":drift})
-
-    def add_event_params(self, event, params):
-        for param in params:
-            event.set(param, params[param])
-            
+    def start_scenario(self, description, gameid, name, tipe):
+        self.scenario = Scenario(description, gameid, name, tipe)
         
         
         
 def demo():
-    t = ScenarioGen()
-    t.add_team("blue team")
-    t.add_team("red team")
-    t.add_team_event("red team", "malign", "ExecHandler", "10.2.10.1", "0", "999999", "124", "09132")
-    evnt = t.add_team_event("blue team", "ping", "ExecHandler", "10.2.10.41", "0", "9999", "0", "0")
-    t.add_event_params(evnt, {"command":"ping 8.8.8.8"})
-    ET.dump(t.tree)
+    print "working"
+    inst = Instance_Builder()
+    print inst
