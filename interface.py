@@ -471,7 +471,12 @@ if __name__ == "__main__":
     note.add(teamsTab,text="Teams")
     
     note.pack()
-
+    
+    createFile = Button(root,text="Create File",command= lambda:instance.write(fileName.get()))
+    createFile.pack(side=BOTTOM,pady=10)
+    fileName = Entry(root)
+    fileName.pack(side=BOTTOM)
+    
     textPad=Frame(root)
     text=Text(textPad,height=10,width=90)	
     # add a vertical scroll bar to the text area

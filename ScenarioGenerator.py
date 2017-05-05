@@ -412,6 +412,11 @@ class Instance_Builder:
     def add_event(self,team, command, drift, endtime, frequency, guid, handler, id, ipaddress, name, start_time):
         team.add_event(command,drift,endtime,frequency,guid,handler,id,ipaddress,name,start_time)
     
+    def write(self,filename):
+        f = open(filename,'w')
+        f.write(str(self))
+        f.close()
+    
 def demo():
     print "working"
     inst = Instance_Builder()
