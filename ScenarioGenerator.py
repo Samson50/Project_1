@@ -272,10 +272,10 @@ class Team_Event:
         self.factors.drop(index)
 
 class Team:
-    def __init__(self, name):
+    def __init__(self, name,host,speed):
         self.name = name
-        self.host = ""
-        self.speed = ""
+        self.host = host
+        self.speed = speed
         self.events = []
 
     def __str__(self):
@@ -284,7 +284,7 @@ class Team:
         ret += '\t\t<speed factor="%s"/>\n' % self.speed
         ret += '\t\t<team-event-list>\n'
         for event in self.events:
-            ret += event
+            ret += '\t\t\t'+str(event)
         ret += '\t\t</team-event-list>\n'
         ret += '\t</team>\n'
         return ret
@@ -296,7 +296,7 @@ class Team:
         self.speed = str(speed)
         
     def add_event(self, command, drift, endtime, frequency, guid, handler, id, ipaddress, name, start_time):
-        self.events += Team_Event(command, drift, endtime, frequency, guid, handler, ip, ipaddress, name, start_time)
+        self.events.append(Team_Event(command, drift, endtime, frequency, guid, handler, id, ipaddress, name, start_time))
 
 class Instance_Builder:
     def __init__(self):
@@ -343,8 +343,8 @@ class Instance_Builder:
     def add_host(self, basevm, domain, hostname, label, phase, ram):
         self.hosts += [Host(basevm, domain, hostname, label, phase, ram)]
 
-    def add_team(self, name):
-        self.teams += Team(name)
+    def add_team(self, name,host,speed):
+        self.teams.append(Team(name,host,speed))
 
     def start_scenario(self, description, gameid, name, tipe):
         self.scenario = Scenario(description, gameid, name, tipe)
@@ -409,7 +409,14 @@ class Instance_Builder:
                             if argg == pack.sharg(arg):
                                 pack.args.remove(arg)							
 
-
+    def add_event(self,team, command, drift, endtime, frequency, guid, handler, id, ipaddress, name, start_time):
+        team.add_event(command,drift,endtime,frequency,guid,handler,id,ipaddress,name,start_time)
+    
+    def write(self,filename):
+        f = open(filename,'w')
+        f.write(str(self))
+        f.close()
+    
 def demo():
     print "working"
     inst = Instance_Builder()
