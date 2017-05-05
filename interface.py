@@ -1,62 +1,132 @@
-import ScenarioGenerator
-from tkinter import *
 import tkinter
 
-def clear(frame):
-    for widget in frame.winfo_children():
-        widget.destroy()
-
-#host, name, config=False, ipv4=False, auto=False, broadcast=False, gateway=False, network=False
-def addInterfaces():
-    clear(mainframe)
-    mainframe.grid_rowconfigure(2,weight=1)
-    mainframe.grid_columnconfigure(2,weight=1)
-    tkinter.Label(mainframe,text="Host").grid(row=1,column=0,padx=5,pady=5)
-    tkinter.Label(mainframe,text="Name").grid(row=2,column=0,padx=5,pady=5)
-    tkinter.Label(mainframe,text="config").grid(row=3,column=0,padx=5,pady=5)
-    tkinter.Label(mainframe,text="IPv4").grid(row=4,column=0,padx=5,pady=5)
-    tkinter.Label(mainframe,text="IPv6").grid(row=5,column=0,padx=5,pady=5)
-    tkinter.Label(mainframe,text="Broadcast").grid(row=6,column=0,padx=5,pady=5)
-    tkinter.Label(mainframe,text="Gateway").grid(row=7,column=0,padx=5,pady=5)
-    tkinter.Label(mainframe,text="Network").grid(row=8,column=0,padx=5,pady=5)
-    host = tkinter.Entry().grid(row=1,column=1,padx=5,pady=5)
-    name = tkinter.Entry().grid(row=2,column=1,padx=5,pady=5)
-    config = tkinter.Entry().grid(row=3,column=1,padx=5,pady=5)
-    vFour = tkinter.Entry().grid(row=4,column=1,padx=5,pady=5)
-    vSix = tkinter.Entry().grid(row=5,column=1,padx=5,pady=5)
-    bcast = tkinter.Entry().grid(row=6,column=1,padx=5,pady=5)
-    gway = tkinter.Entry().grid(row=7,column=1,padx=5,pady=5)
-    net = tkinter.Entry().grid(row=8,column=1,padx=5,pady=5)
-    tkinter.Button(mainframe,text="Next Page",command=addContent)
-    
-def addContent():
-    clear(mainframe)
-    tkinter.Label(mainframe,text="adding content").pack()
-    tkinter.Button(mainframe,text="Next Page",command=addTeam).pack()
-    
-def addTeam():
-    clear(mainframe)
-    tkinter.Label(mainframe,text="adding teams").pack()
-    tkinter.Button(mainframe,text="Next Page",command=addTeamEvent).pack()
-    
-def addTeamEvent():
-    clear(mainframe)
-    tkinter.Label(mainframe,text="adding team events").pack()
-    tkinter.Button(mainframe,text="Next Page",command=addEventParams).pack()
-    
-def addEventParams():
-    clear(mainframe)
-    tkinter.Label(mainframe,text="adding event parameters").pack()
-    tkinter.Button(mainframe,text="Next Page").pack()
-    
-if __name__ == '__main__':
-    root = tkinter.Tk()
-    root.title("OCCP Scenario Builder")
-    mainframe = Frame(root)
-    mainframe.grid(row=0)
-    
-    scen = ScenarioGenerator.ScenarioGen()
-    
-    tkinter.Button(mainframe,text="Begin",command=addInterfaces).grid(row=1)
+class interface (tkinter.Tk):
+    def __init__(self,parent):
+        tkinter.Tk.__init__(self,parent)
+        self.parent = parent
+        self.initialize()
+     
+    def initialize(self):
+        self.grid()
         
-    root.mainloop()
+        self.startButton = tkinter.Button(self, text="BEGIN",command=self.addInterfaces)
+        self.startButton.grid(column=0,row=0,sticky="EW",padx=5,pady=5)
+        
+        self.grid_columnconfigure(0,weight=1)
+        self.resizable(True,False)
+        
+    def addInterfaces(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        
+        self.hostLabel = tkinter.Label(text="Host")
+        self.hostLabel.grid(column=0,row=0,sticky="EW",padx=5,pady=5)
+        
+        self.hostEntry = tkinter.Entry()
+        self.hostEntry.grid(column=1,row=0,sticky="EW",padx=5,pady=5)
+        self.hostEntry.bind("<Return>",self.input(interface))
+        interface.append = self.hostEntry.get()
+        
+        self.nameLabel = tkinter.Label(text="Name")
+        self.nameLabel.grid(column=0,row=1,sticky="EW",padx=5,pady=5)
+        
+        self.nameEntry = tkinter.Entry()
+        self.nameEntry.grid(column=1,row=1,sticky="EW",padx=5,pady=5)
+        self.nameEntry.bind("<Return>",self.input(interface))
+        interface.append = self.nameEntry.get()
+        
+        self.configLabel = tkinter.Label(text="Config")
+        self.configLabel.grid(column=0,row=2,sticky="EW",padx=5,pady=5)
+        
+        self.configEntry = tkinter.Entry()
+        self.configEntry.grid(column=1,row=2,sticky="EW",padx=5,pady=5)
+        self.configEntry.bind("<Return>",self.input(interface))
+        interface.append = self.configEntry.get()
+        
+        self.vFourLabel = tkinter.Label(text="IPv4")
+        self.vFourLabel.grid(column=0,row=3,sticky="EW",padx=5,pady=5)
+        
+        self.vFourEntry = tkinter.Entry()
+        self.vFourEntry.grid(column=1,row=3,sticky="EW",padx=5,pady=5)
+        self.vFourEntry.bind("<Return>",self.input(interface))
+        interface.append = self.vFourEntry.get()
+        
+        self.vSixLabel = tkinter.Label(text="IPv6")
+        self.vSixLabel.grid(column=0,row=4,sticky="EW",padx=5,pady=5)
+        
+        self.vSixEntry = tkinter.Entry()
+        self.vSixEntry.grid(column=1,row=4,sticky="EW",padx=5,pady=5)
+        self.vSixEntry.bind("<Return>",self.input(interface))
+        interface.append = self.vSixEntry.get()
+        
+        self.broadcastLabel = tkinter.Label(text="Broadcast")
+        self.broadcastLabel.grid(column=0,row=5,sticky="EW",padx=5,pady=5)
+        
+        self.broadcastEntry = tkinter.Entry()
+        self.broadcastEntry.grid(column=1,row=5,sticky="EW",padx=5,pady=5)
+        self.broadcastEntry.bind("<Return>",self.input(interface))
+        interface.append = self.broadcastEntry.get()
+        
+        self.gatewayLabel = tkinter.Label(text="Gateway")
+        self.gatewayLabel.grid(column=0,row=6,sticky="EW",padx=5,pady=5)
+        
+        self.gatewayEntry = tkinter.Entry()
+        self.gatewayEntry.grid(column=1,row=6,sticky="EW",padx=5,pady=5)
+        self.gatewayEntry.bind("<Return>",self.input(interface))
+        interface.append = self.gatewayEntry.get()
+        
+        self.netLabel = tkinter.Label(text="Network")
+        self.netLabel.grid(column=0,row=7,sticky="EW",padx=5,pady=5)
+        
+        self.netEntry = tkinter.Entry()
+        self.netEntry.grid(column=1,row=7,sticky="EW",padx=5,pady=5)
+        self.netEntry.bind("<Return>",self.input(interface))
+        interface.append = self.netEntry.get()
+        
+        self.nextPage = tkinter.Button(text="Next Page",command=self.addContent)
+        self.nextPage.grid(column=0,row=8,sticky="EW",padx=5,pady=5,columnspan=2)
+        
+    def input(self,inputs):
+        print(inputs)
+    
+    def addContent(self):
+        print("it works")
+
+if __name__ == "__main__":
+    interface = interface(None)
+    interface.title("OCCP Scenario Builder")
+    interface.mainloop()
+    
+# def addContent():
+    # clear(mainframe)
+    
+    # tkinter.tix.LabelEntry()
+    # tkinter.Label(mainframe,text="adding content")
+    # tkinter.Button(mainframe,text="Next Page",command=addTeam)
+    
+# def addTeam():
+    # clear(mainframe)
+    # tkinter.Label(mainframe,text="adding teams") 
+    # tkinter.Button(mainframe,text="Next Page",command=addTeamEvent) 
+    
+# def addTeamEvent():
+    # clear(mainframe)
+    # tkinter.Label(mainframe,text="adding team events") 
+    # tkinter.Button(mainframe,text="Next Page",command=addEventParams) 
+    
+# def addEventParams():
+    # clear(mainframe)
+    # tkinter.Label(mainframe,text="adding event parameters") 
+    # tkinter.Button(mainframe,text="Next Page") 
+    
+# if __name__ == '__main__':
+    # root = tkinter.tix.Tk()
+    # root.title("OCCP Scenario Builder")
+    # mainframe = Frame(root)
+    # mainframe.grid()
+    
+    # #scen = ScenarioGenerator.ScenarioGen()
+    
+    # tkinter.Button(mainframe,text="Begin",command=addInterfaces).grid(row=0,column=0,sticky="e",columnspan=2)
+        
+    # root.mainloop()
