@@ -8,9 +8,16 @@ class Pack:
 
     def __str__(self):
         ret = '\t\t\t<pack config="%s" name="%s">\n' % (self.config, self.name)
-        for arg in args:
-            ret += "\t\t\t\t<"+arg+">"+args[arg]+"</"+arg+">\n"
+        for arg in self.args:
+            ret += "\t\t\t\t<"+arg+">"+self.args[arg]+"</"+arg+">\n"
         ret += "\t\t\t</pack>\n"
+        return ret
+		
+    def sharg(self, arg):
+        return "<"+arg+">"+self.args[arg]+"</"+arg+">"
+		
+    def show(self):
+        return '<pack config="%s" name="%s">' % (self.config, self.name)
 
     def add_arg(self, arg, val):
         self.args[arg] = val
@@ -20,13 +27,14 @@ class Content:
         self.packs = []
 
     def __str__(self):
-        ret = '/t/t<content>\n'
-        for pack in packs:
-            ret += pack
-        ret += '/t/t</content>\n'
+        ret = '\t\t<content>\n'
+        for pack in self.packs:
+            ret += str(pack)
+        ret += '\t\t</content>\n'
+        return ret
         
     def add_pack(self, config, name):
-        self.packs += Pack(config, name)
+        self.packs += [Pack(config, name)]
 
 class Interface:
     def __init__(self, broadcast, config, gateway, ipv4, name, network):
@@ -54,14 +62,17 @@ class Host:
 
     def __str__(self):
         ret = '\t<host basevm="%s" domain="%s" hostname="%s" label="%s" phase="%s" ram="%s">\n' % (self.basevm, self.domain, self.hostname, self.label, self.phase, self.ram)
-        ret += self.content
+        ret += str(self.content)
         for interface in self.interfaces:
-            ret += interface
+            ret += str(interface)
         ret += "\t</host>\n"
         return ret
+		
+    def show(self):
+        return '<host basevm="%s" domain="%s" hostname="%s" label="%s" phase="%s" ram="%s">' % (self.basevm, self.domain, self.hostname, self.label, self.phase, self.ram)
     
     def add_interface(self, broadcast, config, gateway, ipv4, name, network):
-        self.interfaces += Interface(broadcast, config, gateway, ipv4, name, network)
+        self.interfaces += [Interface(broadcast, config, gateway, ipv4, name, network)]
 
 class User_Interface:
     def __init__(self, name, soc, showboard, sta):
@@ -305,7 +316,7 @@ class Instance_Builder:
         for net in self.networks:
             ret += net
         for host in self.hosts:
-            ret += host
+            ret += str(host)
         ret += str(self.ip_pools)
         ret += str(self.event_handlers)
         for team in self.teams:
@@ -319,17 +330,86 @@ class Instance_Builder:
     def add_network(self, label):
         self.networks += ['\t<network label="%s"/>\n' % label]
 
+    def remove_net(self, net):
+        for work in self.networks:
+            if work.strip() == net:
+                self.networks.remove(work)
+
+    def remove_dns(self, dnss):
+        for dns in self.dns:
+            if dns.strip() == dnss:
+                self.dns.remove(dns)
+
     def add_host(self, basevm, domain, hostname, label, phase, ram):
-        self.hosts += Host(basevm, domain, hostname, label, phase, ram)
+        self.hosts += [Host(basevm, domain, hostname, label, phase, ram)]
 
     def add_team(self, name):
         self.teams += Team(name)
 
     def start_scenario(self, description, gameid, name, tipe):
         self.scenario = Scenario(description, gameid, name, tipe)
-        
-        
-        
+		
+    def get_hosts(self):
+        ret = []
+        for host in self.hosts:
+            ret += [host.show()]
+        return ret
+		
+    def remove_host(self, hostt):
+        for host in self.hosts:
+            if host.show() == hostt:
+                self.hosts.remove(host)
+				
+    def get_packs(self, hostt):
+        ret = []
+        for host in self.hosts:
+            if host.show() == hostt:
+                for pack in host.content.packs:
+                    ret += [pack.show()]
+        return ret
+
+    def get_args(self, hostt, packk):
+        ret = []
+        for host in self.hosts:
+            if host.show() == hostt:
+                for pack in host.content.packs:
+                    if pack.show() == packk:
+                        for arg in pack.args:
+                            ret += [pack.sharg(arg)]
+        return ret
+		
+    def set_interface(self, hostt, broadcast, config, gateway, ipv4, name, network):
+        for host in self.hosts:
+            if host.show() == hostt:
+                host.add_interface(broadcast, config, gateway, ipv4, name, network)			
+
+    def add_pack(self, hostt, config, name):
+        for host in self.hosts:
+            if host.show() == hostt:
+                host.content.add_pack(config, name)	
+
+    def remove_pack(self, hostt, pakk):
+        for host in self.hosts:
+            if host.show() == hostt:
+                for pack in host.content.packs:
+                    if pack.show() == pakk: host.content.packs.remove(pack)				
+
+    def add_arg(self, hostt, pakk, arg, val):
+        for host in self.hosts:
+            if host.show() == hostt:
+                for pack in host.content.packs:					
+                    if pack.show() == pakk: pack.add_arg(arg, val)
+					
+    def remove_arg(self, hostt, pakk, argg):
+        for host in self.hosts:
+            if host.show() == hostt:
+                for pack in host.content.packs:					
+                    if pack.show() == pakk: 
+                        for arg in pack.args:
+                            if argg == pack.sharg(arg):
+                                pack.args.remove(arg)							
+
+
 def demo():
     print "working"
     inst = Instance_Builder()
