@@ -1,4 +1,4 @@
-from tkinter import *
+from Tkinter import *
 from ttk import *
 from ScenarioGenerator import *
 
@@ -340,6 +340,98 @@ class Pools_Tab:
     def update_display(self):
         text.delete(1.0, END)
         text.insert(INSERT, str(instance))
+        
+class Teams_Tab:
+    def __init__(self,parent):
+        self.parent = parent
+        parent.grid()
+        
+        self.team_men = OptionMenu(parent,StringVar(parent))
+        
+        Label(parent,text="Teams").grid(row=0,column=0,columnspan=14,padx=5,pady=5)
+        Label(parent,text="Name").grid(row=1,column=0,padx=5,pady=5)
+        self.name = Entry(parent)
+        self.name.grid(row=1,column=1,padx=5,pady=5)
+        Label(parent,text="Host").grid(row=1,column=2,padx=5,pady=5)
+        self.hostname = Entry(parent)
+        self.hostname.grid(row=1,column=3,padx=5,pady=5)
+        Label(parent,text="Speed Factor").grid(row=1,column=4,padx=5,pady=5)
+        self.speed = Entry(parent)
+        self.speed.grid(row=1,column=5,padx=5,pady=5)
+        self.addTeamButt = Button(parent,text="Add",command=self.add_team)
+        self.addTeamButt.grid(row=1,column=6,padx=5,pady=5)
+        
+        Label(parent,text="Active").grid(row=3,column=0,columnspan=7,padx=5,pady=5)
+        self.opts = ["none"]
+        self.team_var = StringVar(parent)
+        self.team_var.set(self.opts[0])
+        self.team_var.trace('w',self.update_teams)
+        self.team_men = apply(OptionMenu,(parent,self.team_var) + tuple(self.opts))
+        self.team_men.grid(row=3,column=1,columnspan=7)
+        
+        Label(parent,text="Event").grid(row=4,column=0,columnspan=14)
+        Label(parent,text="Command").grid(row=5,column=0,padx=5,pady=5)
+        self.command = Entry(parent)
+        self.command.grid(row=5,column=1,padx=5,pady=5)
+        Label(parent,text="Drift").grid(row=5,column=2,padx=5,pady=5)
+        self.drift = Entry(parent)
+        self.drift.grid(row=5,column=3,padx=5,pady=5)
+        Label(parent,text="Handler").grid(row=5,column=4,padx=5,pady=5)
+        self.handler = Entry(parent)
+        self.handler.grid(row=5,column=5,padx=5,pady=5)
+        Label(parent,text="ID").grid(row=5,column=6,padx=5,pady=5)
+        self.id = Entry(parent)
+        self.id.grid(row=5,column=7,padx=5,pady=5)
+        Label(parent,text="IP Address").grid(row=5,column=8,padx=5,pady=5)
+        self.addr = Entry(parent)
+        self.addr.grid(row=5,column=9,padx=5,pady=5)
+        Label(parent,text="Name").grid(row=5,column=10,padx=5,pady=5)
+        self.name = Entry(parent)
+        self.name.grid(row=5,column=11,padx=5,pady=5)
+        Label(parent,text="Start Time").grid(row=5,column=12,padx=5,pady=5)
+        self.start = Entry(parent)
+        self.start.grid(row=5,column=13,padx=5,pady=5)
+        Label(parent,text="End Time").grid(row=5,column=13,padx=5,pady=5)
+        self.end = Entry(parent)
+        self.end.grid(row=5,column=14,padx=5,pady=5)
+        
+        Label(parent,text="Frequency").grid(row=6,column=0,padx=5,pady=5)
+        self.freq = Entry(parent)
+        self.freq.grid(row=6,column=1,padx=5,pady=5)
+        Label(parent,text="Points").grid(row=6,column=2,columnspan=2,padx=5,pady=5)
+        self.points = Entry(parent)
+        self.points.grid(row=6,column=3,columnspan=2,padx=5,pady=5)
+        Label(parent,text="Score Group").grid(row=6,column=4,columnspan=2,padx=5,pady=5)
+        self.group = Entry(parent)
+        self.group.grid(row=6,column=5,columnspan=2,padx=5,pady=5)
+        Label(parent,text="When").grid(row=6,column=6,columnspan=2,padx=5,pady=5)
+        self.when = Entry(parent)
+        self.when.grid(row=6,column=7,columnspan=2,padx=5,pady=5)
+        
+        self.addEventButt = Button(parent,text="Add Event",command=self.add_event)
+        self.addEventButt.grid(row=7,column=6,padx=5,pady=5)
+        
+    def update_display(self):
+        text.delete(1.0,END)
+        text.insert(INSERT,str(instance))
+        
+    def add_team(self):
+        instance.add_team(self.name.get(),self.hostname.get(),self.speed.get())
+        self.opts = instance.teams
+        self.update_teams(instance.teams)
+        self.update_display()
+    
+    def update_teams(self,*args):
+        teams = instance.teams
+        menu = self.team_men['menu']
+        menu.delete(0,"end")
+        for team in self.opts:
+            menu.add_command(label=team,command=lambda t=team: self.team_var.set(t))
+        self.update_display()
+        
+    def add_event(self):
+        instance.add_event(self.opts[0],self.command.get(),self.drift.get(),self.end.get(),self.freq.get(),"",self.handler.get(),self.id.get(),self.addr.get(),self.name.get(),self.start.get())
+        self.update_display()
 
 if __name__ == "__main__":
 
@@ -367,6 +459,8 @@ if __name__ == "__main__":
     derp = Event_Tab(eventHandlersTab)
 
     merp = Host_Tab(hostsTab)
+    
+    teams = Teams_Tab(teamsTab)
     
     #Adding to the Notebook
     note.add(networkTab,text="Network")
