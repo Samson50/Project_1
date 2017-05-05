@@ -90,23 +90,6 @@ class Host_Tab:
         self.ui_sb.grid(row=10, column=1)
         Button(tab2, text="Set")
 
-        Label(tab2, text="Arguments").grid(row=8, column=0, columnspan=13, pady=10)
-        Label(tab2, text="Argument").grid(row=9, column=0)
-        self.arg = Entry(tab2)
-        self.arg.grid(row=9, column=1)
-        Label(tab2, text="Value").grid(row=9, column=2)
-        self.val = Entry(tab2)
-        self.val.grid(row=9, column=3)
-        Button(tab2, text="Add", command=self.add_arg).grid(row=9, column=12)
-
-        Label(tab2, text="Active Pack").grid(row=10, column=0, pady=10)
-        opts3 = ["none"]
-        self.arg_var = StringVar(tab2)
-        self.arg_var.set(opts3[0])
-        self.arg_men = apply(OptionMenu, (tab2, self.arg_var) + tuple(opts3))
-        self.arg_men.grid(row=10, column=1, columnspan=11)
-        Button(tab2, text="Remove", command=self.remove_arg).grid(row=10, column=12)
-
     def update_display(self):
         text.delete(1.0, END)
         text.insert(INSERT, str(instance))
@@ -124,40 +107,6 @@ class Host_Tab:
     def set_interface(self):
         instance.set_interface(self.host_var.get(), self.ibc.get(), self.cfg.get(), self.gtw.get(), self.iip.get(), self.ina.get(), self.ine.get())
         self.update_display()
-
-    def add_pack(self):
-        instance.add_pack(self.host_var.get(), self.pcon.get(), self.pnam.get())
-        self.update_packs()
-        self.update_display()
-
-    def remove_pack(self):
-        instance.remove_pack(self.host_var.get(), self.pack_var.get())
-        self.update_packs()
-        self.update_display()
-
-    def add_arg(self):
-        instance.add_arg(self.host_var.get(), self.pack_var.get(), self.arg.get(), self.val.get())
-        self.update_display()
-        self.update_args()
-
-    def remove_arg(self):
-        instance.remove_arg(self.host_var.get(), self.pack_var.get(), self.arg_var.get())
-        self.update_display()
-
-    def update_host_men(self, opts):
-        menu = self.host_men["menu"]
-        menu.delete(0, "end")
-        for string in opts:
-            menu.add_command(label=string, command=lambda value=string: self.host_var.set(value))
-        self.update_packs()
-
-    def update_packs(self, *args):
-        packs = instance.get_packs(self.host_var.get())
-        menu = self.pack_men['menu']
-        menu.delete(0, 'end')
-        for pack in packs:
-            menu.add_command(label=pack, command=lambda p=pack: self.pack_var.set(p))
-        self.update_args()
 
     def update_args(self, *args):
         args = instance.get_args(self.host_var.get(), self.pack_var.get())
