@@ -320,22 +320,40 @@ class Pools_Tab:
         Button(tab2, text="Remove", command=self.remove_addr).grid(row=5, column=12)
 
     def add_addr(self):
-        print "asdf"
+        instance.add_address(self.pool_var.get(), self.addr.get(), self.cnt.get(), self.sel.get(), self.typ.get())
+        self.update_display()
+        self.update_addr()
 
     def remove_addr(self):
-        print "asdf"
+        for pewl in instance.ip_pools.pools:
+            if pewl.show() == self.pool_var.get():
+                pewl.remove_address(self.addr_var.get())
+        self.update_display()
+        self.update_addr()
 
     def update_addr(self):
-        print "asdf"
+        menu = self.addr_men["menu"]
+        menu.delete(0, "end")
+        for string in instance.ip_pools.get_addrs(self.pool_var.get()):
+            string = str(string).strip()
+            menu.add_command(label=string, command=lambda value=string: self.addr_var.set(value))
 
     def add_pool(self):
-        print "asdf"
+        instance.ip_pools.add_pool(self.cidr.get(), self.nam.get(), self.net.get())
+        self.update_display()
+        self.update_pool()
 
     def remove_pool(self):
-        print "asdf"
+        instance.ip_pools.remove_pool(self.pool_var.get())
+        self.update_display()
+        self.update_pool()
 
     def update_pool(self):
-        print "asdf"
+        menu = self.pool_men["menu"]
+        menu.delete(0, "end")
+        for string in instance.ip_pools.pools:
+            string = string.show()
+            menu.add_command(label=string, command=lambda value=string: self.pool_var.set(value))
 
     def update_display(self):
         text.delete(1.0, END)
@@ -454,7 +472,7 @@ class Scenario_Tab:
         Label(tab2, text='type').grid(row=1, column=6)
         self.styp = Entry(tab2)
         self.styp.grid(row=1, column=7)
-        Button(tab2, text="Set").grid(row=1, column=12)
+        Button(tab2, text="Set", command=self.start_scenario).grid(row=1, column=12)
         
         Label(tab2, text='Length').grid(row=2, column=0, columnspan=13, pady=10)
         Label(tab2, text='format').grid(row=3, column=0)
@@ -463,50 +481,56 @@ class Scenario_Tab:
         Label(tab2, text='time').grid(row=3, column=2)
         self.stim = Entry(tab2)
         self.stim.grid(row=3, column=3)
-        Button(tab2, text='Set').grid(row=3, column = 12)
+        Button(tab2, text='Set', command=self.set_length).grid(row=3, column = 12)
 
-        Label(tab2, text='Users').grid(row=4, column=0, columnspan=13, pady=10)
-        Label(tab2, text='user-name').grid(row=5, column=0)
+        Label(tab2, text='Network ID').grid(row=4, column=0, columnspan=13, pady=10)
+        Label(tab2, text='name').grid(row=5, column=0)
+        self.nid = Entry(tab2)
+        self.nid.grid(row=5, column=1)
+        Button(tab2, text='Set', command=self.set_networkid).grid(row=5, column = 12)
+
+        Label(tab2, text='Users').grid(row=6, column=0, columnspan=13, pady=10)
+        Label(tab2, text='user-name').grid(row=7, column=0)
         self.unam = Entry(tab2)
-        self.unam.grid(row=5, column=1)
-        Label(tab2, text='password').grid(row=5, column=2)
+        self.unam.grid(row=7, column=1)
+        Label(tab2, text='password').grid(row=7, column=2)
         self.upas = Entry(tab2)
-        self.upas.grid(row=5, column=3)
-        Button(tab2, text = "Add").grid(row=5, column=12)
+        self.upas.grid(row=7, column=3)
+        Button(tab2, text = "Add", command=self.add_user).grid(row=7, column=12)
 
-        Label(tab2, text="Active User").grid(row=6, column=0, pady=10)
+        Label(tab2, text="Active User").grid(row=8, column=0, pady=10)
         opts2 = ["none"]
         self.usr_var = StringVar(tab2)
         self.usr_var.set(opts2[0])
         self.usr_men = apply(OptionMenu, (tab2, self.usr_var) + tuple(opts2))
-        self.usr_men.grid(row=6, column=1, columnspan=11)
-        Button(tab2, text="Remove").grid(row=6, column=12)
+        self.usr_men.grid(row=8, column=1, columnspan=11)
+        Button(tab2, text="Remove", command=self.remove_user).grid(row=8, column=12)
 
-        Label(tab2, text='User-Interface').grid(row=7, column=0, columnspan=13, pady=10)
-        Label(tab2, text='name').grid(row=8, column=0)
+        Label(tab2, text='User-Interface').grid(row=9, column=0, columnspan=13, pady=10)
+        Label(tab2, text='name').grid(row=10, column=0)
         self.uinam = Entry(tab2)
-        self.uinam.grid(row=8, column=1)
-        Label(tab2, text='show-other-controls').grid(row=8, column=2)
+        self.uinam.grid(row=10, column=1)
+        Label(tab2, text='show-other-controls').grid(row=10, column=2)
         self.soc = Entry(tab2)
-        self.soc.grid(row=8, column=3)
-        Label(tab2, text='show-scoreboard').grid(row=8, column=4)
-        self.uinam = Entry(tab2)
-        self.uinam.grid(row=8, column=5)
-        Label(tab2, text='show-teams-all').grid(row=8, column=6)
-        self.uinam = Entry(tab2)
-        self.uinam.grid(row=8, column=7)
-        Button(tab2, text = "Add").grid(row=8, column=12)
+        self.soc.grid(row=10, column=3)
+        Label(tab2, text='show-scoreboard').grid(row=10, column=4)
+        self.uscv = Entry(tab2)
+        self.uscv.grid(row=10, column=5)
+        Label(tab2, text='show-teams-all').grid(row=10, column=6)
+        self.sta = Entry(tab2)
+        self.sta.grid(row=10, column=7)
+        Button(tab2, text = "Add", command=self.add_ui).grid(row=10, column=12)
 
-        Label(tab2, text="Active UI").grid(row=9, column=0, pady=10)
+        Label(tab2, text="Active UI").grid(row=11, column=0, pady=10)
         opts2 = ["none"]
         self.ui_var = StringVar(tab2)
         self.ui_var.set(opts2[0])
         #self.ui_var.trace('w', self.update_ui_men)
         self.ui_men = apply(OptionMenu, (tab2, self.ui_var) + tuple(opts2))
-        self.ui_men.grid(row=9, column=1, columnspan=11)
-        Button(tab2, text="Remove").grid(row=9, column=12)
+        self.ui_men.grid(row=11, column=1, columnspan=11)
+        Button(tab2, text="Remove", command=self.remove_ui).grid(row=11, column=12)
 
-        Label(tab2, text="scoreboard").grid(row=10, column=0)
+        Label(tab2, text="scoreboard").grid(row=12, column=0)
         self.ui_sb = Entry(tab2)
         self.ui_sb.grid(row=10, column=1)
         Button(tab2, text="Set")
@@ -514,28 +538,58 @@ class Scenario_Tab:
     def update_display(self):
         text.delete(1.0, END)
         text.insert(INSERT, str(instance))
-        
-    def add_host(self):
-        instance.add_host(self.bvm.get(), self.dom.get(), self.hon.get(), self.lab.get(), self.pha.get(), self.ram.get())
-        self.update_host_men(instance.get_hosts())
+
+    def start_scenario(self):
+        instance.start_scenario(self.sdes.get(), self.sgid.get(), self.snam.get(), self.styp.get())
         self.update_display()
 
-    def remove_host(self):
-        print "meep"
-        self.update_host_men(instance.get_hosts())
+    def set_length(self):
+        instance.scenario.set_length(self.slen.get(), self.stim.get())
         self.update_display()
 
-    def set_interface(self):
-        instance.set_interface(self.host_var.get(), self.ibc.get(), self.cfg.get(), self.gtw.get(), self.iip.get(), self.ina.get(), self.ine.get())
+    def set_networkid(self):
+        instance.scenario.set_networkid(self.nid.get())
         self.update_display()
 
-    def update_args(self, *args):
-        args = instance.get_args(self.host_var.get(), self.pack_var.get())
-        menu = self.arg_men['menu']
+    def set_scoreboard(self):
+        instance.scenario.set_scoreboard(self.ui_var.get(), self.ui_sb.get())
+        self.update_display()
+
+    def update_users(self):
+        users = instance.scenario.users
+        menu = self.usr_men['menu']
+        menu.delete(0, 'end')
+        for usr in users:
+            usr = usr.strip()
+            menu.add_command(label=usr, command=lambda u=usr: self.usr_var.set(u))
+
+    def update_ui(self):
+        args = instance.scenario.get_ui()
+        menu = self.ui_men['menu']
         menu.delete(0, 'end')
         for arg in args:
-            menu.add_command(label=arg, command=lambda a=arg: self.arg_var.set(a))
+            arg = arg.show()
+            menu.add_command(label=arg, command=lambda a=arg: self.ui_var.set(a))
+        
+    def add_user(self):
+        instance.scenario.add_user(self.unam.get(), self.upas.get())
+        self.update_users()
+        self.update_display()
 
+    def remove_user(self):
+        instance.scenario.remove_user(self.usr_var.get())
+        self.update_display()
+        self.update_ui()
+
+    def add_ui(self):
+        instance.scenario.add_ui(self.uinam.get(), self.soc.get(), self.uscv.get(), self.sta.get())
+        self.update_users()
+        self.update_display()
+
+    def remove_ui(self):
+        instance.scenario.remove_ui(self.ui_var.get())
+        self.update_display()
+        self.update_ui()
 
 
 if __name__ == "__main__":

@@ -92,6 +92,10 @@ class User_Interface:
             ret += '\t\t\t\t\t<user name="%s"/>\n' % (usr)
         ret += '\t\t\t\t</permitted-users>\n'
         ret += '\t\t\t</user-interface>\n'
+        return ret
+
+    def show(self):
+        return '<user-interface name="%s" show-other-controls="%s" show-scoreboard="%s" show-teams-all="%s">' % (self.name, self.soc, self.showboard, self.sta)
 
     def add_user(self, name):
         self.permitted_users += [name]
@@ -143,7 +147,7 @@ class Scenario:
         ret += '\t\t</users>\n'
         ret += '\t\t<user-interfaces>\n'
         for ui in self.user_interfaces:
-            ret += ui
+            ret += str(ui)
         ret += '\t\t</user-interfaces>\n'
         ret += '\t\t<score-labels>\n'
         for label in self.score_labels:
@@ -169,6 +173,11 @@ class Scenario:
     def add_user(self, name, passwd):
         self.users += ['\t\t\t<user name="%s" pass="%s"/>\n' % (name, passwd)]
 
+    def remove_user(self, user):
+        for usr in self.users:
+            if usr.strip() == user:
+                self.users.remove(usr)
+
     def add_interface(self, name, soc, showboard, sta):
         self.user_interfaces += User_Interface(name, soc, showboard, sta)
 
@@ -180,6 +189,21 @@ class Scenario:
 
     def add_scoreboard(self, name, update_rate):
         self.scoreboards += Scoreboard(name, update_rate)
+
+    def add_ui(self, uinam, soc, uscv, sta):
+        self.user_interfaces += [User_Interface(uinam, soc, uscv, sta)]
+
+    def remove_ui(self, ui):
+        for usr_int in self.user_interfaces:
+            if usr_int.show() == ui:
+                self.user_interfaces.remove(usr_int)
+    def get_ui(self):
+        return self.user_interfaces
+
+    def set_scoreboard(self, ui, sb):
+        for uis in self.user_interfaces:
+            if uis.show() == ui:
+                uis.set_scoreboard(sb)
 
 class Address:
     def __init__(self, addr, count, select, tipe):
@@ -201,12 +225,20 @@ class IP_Pool:
     def __str__(self):
         ret = '\t\t<pool cidr="%s" name="%s" network="%s">\n' % (self.cidr, self.name, self.network)
         for addr in self.addresses:
-            ret += addr
+            ret += str(addr)
         ret += '\t\t</pool>\n'
         return ret
 
+    def show(self):
+        return '<pool cidr="%s" name="%s" network="%s">' % (self.cidr, self.name, self.network)
+
     def add_address(self, addr, count, select, tipe):
-        self.address += Address(addr, count, select, tipe)
+        self.addresses += [Address(addr, count, select, tipe)]
+
+    def remove_address(self, addr):
+        for address in self.addresses:
+            if str(address).strip() == addr:
+                self.addresses.remove(address)
 
 class IP_Pools:
     def __init__(self):
@@ -215,9 +247,21 @@ class IP_Pools:
     def __str__(self):
         ret = '\t<ip-pools>\n'
         for pool in self.pools:
-            ret += pool
+            ret += str(pool)
         ret += '\t</ip-pools>\n'
         return ret
+
+    def add_pool(self, cidr, name, network):
+        self.pools += [(IP_Pool(cidr, name, network))]
+
+    def remove_pool(self, pool):
+        for pewl in self.pools:
+            if pool == pewl.show().strip():
+                self.pools.remove(pewl)
+    def get_addrs(self, pool):
+        for pewl in self.pools:
+            if pewl.show() == pool:
+                return pewl.addresses
 
 class Handler:
     def __init__(self, ch, name, sh, si, sp):
@@ -306,6 +350,7 @@ class Instance_Builder:
         self.ip_pools = IP_Pools()
         self.event_handlers = Event_Handlers()
         self.teams = []
+        self.scenario = Scenario("", "", "", "")
 
     def __str__(self):
         ret = '<occpchallenge>\n'
@@ -319,6 +364,7 @@ class Instance_Builder:
             ret += str(host)
         ret += str(self.ip_pools)
         ret += str(self.event_handlers)
+        ret += str(self.scenario)
         for team in self.teams:
             ret += str(team)
         ret += '</occpchallenge>'
@@ -411,7 +457,12 @@ class Instance_Builder:
 
     def add_event(self,team, command, drift, endtime, frequency, guid, handler, id, ipaddress, name, start_time):
         team.add_event(command,drift,endtime,frequency,guid,handler,id,ipaddress,name,start_time)
-    
+
+    def add_address(self, pool, addr, cnt, sel, typ):
+        for pewl in self.ip_pools.pools:
+            if pewl.show() == pool:
+                pewl.add_address(addr, cnt, sel, typ)
+
     def write(self,filename):
         f = open(filename,'w')
         f.write(str(self))
