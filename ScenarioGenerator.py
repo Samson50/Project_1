@@ -274,6 +274,9 @@ class Handler:
     def __str__(self):
         return '\t\t<handler class-handler="%s" name="%s" server-hostname="%s" server-ip="%s" server-port="%s"/>\n' % (self.ch, self.name, self.sh, self.si, self.sp)
 
+    def show(self):
+        return '<handler class-handler="%s" name="%s" server-hostname="%s" server-ip="%s" server-port="%s"/>' % (self.ch, self.name, self.sh, self.si, self.sp)
+
 class Event_Handlers:
     def __init__(self):
         self.handlers = []
@@ -281,12 +284,17 @@ class Event_Handlers:
     def __str__(self):
         ret = '\t<event-handlers>\n'
         for han in self.handlers:
-            ret += han
+            ret += str(han)
         ret += '\t</event-handlers>\n'
         return ret
 
     def add_handler(self, class_handler, name, server_hostname, server_ip, server_port):
-        self.handlers += Handler(class_handler, name, server_hostname, server_ip, server_port)
+        self.handlers += [Handler(class_handler, name, server_hostname, server_ip, server_port)]
+
+    def remove_handler(self, handler):
+        for han in self.handlers:
+            if han.show() == handler:
+                self.handlers.remove(han)
 
 class Team_Event:
     def __init__(self, command, drift, endtime, freq, guid, handler, id, ipaddr, name, st):
