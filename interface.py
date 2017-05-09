@@ -261,13 +261,21 @@ class Event_Tab:
         Button(tab2, text="Remove", command=self.remove_event).grid(row=2, column=12)
 
     def add_event(self):
-        print"asdf"
+        instance.event_handlers.add_handler(self.chan.get(), self.nam.get(), self.shn.get(), self.sip.get(), self.sport.get())
+        self.update_display()
+        self.update_event()
 
     def remove_event(self):
-        print"asdf"
+        instance.event_handlers.remove_handler(self.event_var.get())
+        self.update_display()
+        self.update_event()
 
     def update_event(self):
-        print "asdf"
+        menu = self.event_men["menu"]
+        menu.delete(0, "end")
+        for string in instance.event_handlers.handlers:
+            string = string.strip()
+            menu.add_command(label=string, command=lambda value=string: self.event_var.set(value))
 
     def update_display(self):
         text.delete(1.0, END)
@@ -320,7 +328,9 @@ class Pools_Tab:
         Button(tab2, text="Remove", command=self.remove_addr).grid(row=5, column=12)
 
     def add_addr(self):
-        print "asdf"
+        instance.add_address(self.pool_var.get(), self.addr.get(), self.cnt.get(), self.sel.get(), self.typ.get())
+        self.update_display()
+        self.update_addr()
 
     def remove_addr(self):
         print "asdf"
@@ -329,13 +339,21 @@ class Pools_Tab:
         print "asdf"
 
     def add_pool(self):
-        print "asdf"
+        instance.ip_pools.add_pool(self.cidr.get(), self.nam.get(), self.net.get())
+        self.update_display()
+        self.update_pool()
 
     def remove_pool(self):
-        print "asdf"
+        instance.ip_pools.remove_pool(self.pool_var.get())
+        self.update_display()
+        self.update_pool()
 
     def update_pool(self):
-        print "asdf"
+        menu = self.pool_men["menu"]
+        menu.delete(0, "end")
+        for string in instance.ip_pools.pools:
+            string = string.show()
+            menu.add_command(label=string, command=lambda value=string: self.pool_var.set(value))
 
     def update_display(self):
         text.delete(1.0, END)

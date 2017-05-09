@@ -201,12 +201,20 @@ class IP_Pool:
     def __str__(self):
         ret = '\t\t<pool cidr="%s" name="%s" network="%s">\n' % (self.cidr, self.name, self.network)
         for addr in self.addresses:
-            ret += addr
+            ret += str(addr)
         ret += '\t\t</pool>\n'
         return ret
 
+    def show(self):
+        return '<pool cidr="%s" name="%s" network="%s">' % (self.cidr, self.name, self.network)
+
     def add_address(self, addr, count, select, tipe):
-        self.address += Address(addr, count, select, tipe)
+        self.address += [Address(addr, count, select, tipe)]
+
+    def remove_address(self, addr):
+        for address in self.addresses:
+            if str(self.address).strip() == addr:
+                self.addresses.remove(address)
 
 class IP_Pools:
     def __init__(self):
@@ -215,9 +223,17 @@ class IP_Pools:
     def __str__(self):
         ret = '\t<ip-pools>\n'
         for pool in self.pools:
-            ret += pool
+            ret += str(pool)
         ret += '\t</ip-pools>\n'
         return ret
+
+    def add_pool(self, cidr, name, network):
+        self.pools += [(IP_Pool(cidr, name, network))]
+
+    def remove_pool(self, pool):
+        for pewl in self.pools:
+            if pool == pewl.show().strip():
+                self.pools.remove(pewl)
 
 class Handler:
     def __init__(self, ch, name, sh, si, sp):
@@ -237,12 +253,17 @@ class Event_Handlers:
     def __str__(self):
         ret = '\t<event-handlers>\n'
         for han in self.handlers:
-            ret += han
+            ret += str(han)
         ret += '\t</event-handlers>\n'
         return ret
 
     def add_handler(self, class_handler, name, server_hostname, server_ip, server_port):
-        self.handlers += Handler(class_handler, name, server_hostname, server_ip, server_port)
+        self.handlers += [str(Handler(class_handler, name, server_hostname, server_ip, server_port))]
+
+    def remove_handler(self, handler):
+        for han in self.handlers:
+            if han.strip() == handler:
+                self.handlers.remove(han)
 
 class Team_Event:
     def __init__(self, command, drift, endtime, freq, guid, handler, id, ipaddr, name, st):
@@ -269,7 +290,7 @@ class Team_Event:
         self.factors += ['\t\t\t\t<score-atomic points="%s" score-group="%s" when="%s"/>\n' % (points, score_group, when)]
 
     def remove_factor(self, index):
-        self.factors.drop(index)
+        self.factors.remove(index)
 
 class Team:
     def __init__(self, name):
@@ -407,10 +428,13 @@ class Instance_Builder:
                     if pack.show() == pakk: 
                         for arg in pack.args:
                             if argg == pack.sharg(arg):
-                                pack.args.remove(arg)							
-
-
-def demo():
-    print "working"
-    inst = Instance_Builder()
-    print inst
+                                pack.args.remove(arg)
+    def add_address(pool, addr, cnt, sel, typ):
+        for pewl in self.pools:
+            if pewl.show() == pool:
+                pewl.add_address(addr, cnt, sel, typ)
+##
+##def demo():
+##    print "working"
+##    inst = Instance_Builder()
+##    print inst
